@@ -1,53 +1,14 @@
 import React, { Component } from "react";
+import Search from "./Search";
+import ContactList from "./ContactList";
 import contacts from "./contacts.json";
 import "./App.css";
-
-const ContactList = props => {
-  return (
-    <table
-      style={{
-        marginLeft: "50%",
-        transform: "translate(-50%)"
-      }}
-    >
-      <thead>
-        <tr>
-          <th>Picture</th>
-          <th>Name</th>
-          <th>Popularity</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {props.contacts.map(contact => {
-          return (
-            <tr key={contact.id}>
-              <td>
-                <img
-                  src={contact.pictureUrl}
-                  height="100px"
-                  alt={contact.name}
-                />
-              </td>
-              <td>{contact.name}</td>
-              <td>{contact.popularity.toFixed(2)}</td>
-              <td>
-                <button onClick={() => props.filterContacts(contact.id)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  );
-};
 
 class App extends Component {
   // initial state
   state = {
-    contacts: contacts.slice(0, 5)
+    contacts: contacts.slice(0, 5),
+    query: ""
   };
 
   deleteContact = contactId => {
@@ -100,6 +61,12 @@ class App extends Component {
     });
   };
 
+  setQuery = query => {
+    this.setState({
+      query: query
+    });
+  };
+
   render() {
     return (
       <div className="App">
@@ -107,9 +74,13 @@ class App extends Component {
         <button onClick={this.addContact}>Add Random Contact</button>
         <button onClick={this.sortByName}>Sort by name</button>
         <button onClick={this.sortByPop}>Sort by popularity</button>
+
+        <Search setQuery={this.setQuery} query={this.state.query} />
+
         <ContactList
           contacts={this.state.contacts}
           filterContacts={this.deleteContact}
+          filter={this.state.query}
         />
       </div>
     );
